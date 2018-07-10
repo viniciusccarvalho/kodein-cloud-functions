@@ -1,0 +1,54 @@
+== Introduction
+
+This project provides adapters to different cloud providers allowing developers to write Kotlin functions that are not tied to any specific cloud vendor.
+
+Although it is highly inspired on the amazing https://github.com/spring-cloud/spring-cloud-function[Spring Cloud Function], this project is far from providing anything even close to the functionality provided by the Spring project.
+This is simply an idea that may fly with others one day
+
+== How to use
+
+I took a lot of liberty on using http://kodein.org/[Kodein] as the DI framework for the project, many of the decisions I made may not be the best, and
+hopefuly someone will correct it via a PR :)
+
+In order to use the project you must first import it on your pom:
+
+[source,xml]
+----
+<dependency>
+    <groupId>io.igx.kotlin.cloud.functions</groupId>
+    <artifactId>aws-adapter</artifactId>
+</dependency>
+
+----
+
+The project uses java `ServiceLoader` mechanism to find Kodein modules on the classpath. You need to create a class that implements `io.igx.kotlin.cloud.functions.ModuleLoader`
+such as
+
+[source, kotlin]
+----
+class SampleModuleLoader : ModuleLoader {
+    override fun getModules(): List<Kodein.Module> {
+        val module = Kodein.Module("samples") {
+            bind<Function1<Foo, Bar>>(tag = "fooBar") with singleton { FooBar() } <1>
+            bind(tag ="reqRes") from singleton { {r:Request -> Response(200)} } <2>
+        }
+        return listOf(module)
+    }
+}
+----
+<1> Binding a top level class such as `class FooBar : (Foo) -> (Bar) {`
+<2> Binding of a high level function, no type declared
+
+And as with any `ServiceLoader` implementation you need to create a file named `META-INF/services/io.igx.kotlin.cloud.functions.ModuleLoader` with the name of
+all the `ServiceLoader` implementations you have.
+
+That's pretty much all it takes, no dependency on the cloud provider contract.
+
+On AWS when deploying make sure you set the Handler to `io.igx.kotlin.cloud.functions.aws.KodeinStreamHandler` and that you set a `FUNCTION_NAME` environment variable
+to match the `tag` attribute of your `bind`
+
+== Next steps
+
+* Improve docs a lot
+* Better reflection handling
+* Azure, OpenWhisk support

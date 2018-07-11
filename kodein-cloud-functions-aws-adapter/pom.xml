@@ -9,7 +9,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>aws-adapter</artifactId>
+    <artifactId>kodein-cloud-functions-aws-adapter</artifactId>
     <packaging>jar</packaging>
 
     <name>io.igx.kotlin.cloud.functions aws-adapter</name>
@@ -25,6 +25,11 @@
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib</artifactId>
             <version>${kotlin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.igx.kotlin.cloud.functions</groupId>
+            <artifactId>kodein-cloud-functions-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>

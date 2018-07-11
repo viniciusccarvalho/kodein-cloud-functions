@@ -57,7 +57,8 @@ class KodeinStreamHandler : RequestStreamHandler {
         val fn = kodein.direct.allInstances<Any>(tag = function)[0]
 
         var type: Type? = null
-
+        //Ok this is a hack to support high order functions, which type can't be determined. We use java reflection instead,
+        //the inner class generated always have a final method with the right signature
         try{
             type = fn::class.declaredFunctions.first().parameters[1].type.javaType
         } catch(e: UnsupportedOperationException){

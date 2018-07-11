@@ -9,6 +9,7 @@
     <modules>
         <module>kodein-cloud-functions-aws-adapter</module>
         <module>kodein-cloud-functions-core</module>
+        <module>kodein-cloud-functions-azure-adapter</module>
     </modules>
     <packaging>pom</packaging>
 

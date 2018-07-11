@@ -16,7 +16,7 @@ In order to use the project you must first import it on your pom:
 ----
 <dependency>
     <groupId>io.igx.kotlin.cloud.functions</groupId>
-    <artifactId>aws-adapter</artifactId>
+    <artifactId>kodein-cloud-functions-aws-adapter</artifactId>
 </dependency>
 
 ----

@@ -22,6 +22,7 @@ import com.amazonaws.services.lambda.runtime.RequestStreamHandler
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.igx.kotlin.cloud.functions.ModuleLoader
+import io.igx.kotlin.cloud.functions.handler.BaseFunctionHandler
 import org.kodein.di.Kodein
 import org.kodein.di.direct
 import org.kodein.di.generic.allInstances
@@ -37,12 +38,10 @@ import java.util.*
 import kotlin.reflect.full.declaredFunctions
 import kotlin.reflect.jvm.javaType
 
-class KodeinStreamHandler : RequestStreamHandler {
-
-    val kodein = Kodein {
-        loadModules().forEach { module -> import(module) }
-        bind<ObjectMapper>() with singleton { ObjectMapper().registerKotlinModule() }
-    }
+/**
+ * @author Vinicius Carvalho
+ */
+class KodeinStreamHandler : RequestStreamHandler, BaseFunctionHandler() {
 
     override fun handleRequest(input: InputStream?, output: OutputStream?, context: Context?) {
 
@@ -54,7 +53,7 @@ class KodeinStreamHandler : RequestStreamHandler {
             throw IllegalStateException("Can not locate function in catalog, please make sure you provide a FUNCTION_NAME environment variable")
         }
 
-        val fn = kodein.direct.allInstances<Any>(tag = function)[0]
+        val fn = loadFunction(function)
 
         var type: Type? = null
         //Ok this is a hack to support high order functions, which type can't be determined. We use java reflection instead,
@@ -75,13 +74,6 @@ class KodeinStreamHandler : RequestStreamHandler {
 
         mapper.writeValue(output, fx(arg))
 
-    }
-
-    fun loadModules(): List<Kodein.Module> {
-        var list = mutableListOf<Kodein.Module>()
-        val loader = ServiceLoader.load(ModuleLoader::class.java)
-        loader.forEach { moduleLoader -> list.addAll(moduleLoader.getModules()) }
-        return list
     }
 
 }

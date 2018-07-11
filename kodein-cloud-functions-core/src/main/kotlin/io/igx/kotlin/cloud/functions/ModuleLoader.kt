@@ -19,6 +19,9 @@ package io.igx.kotlin.cloud.functions
 
 import org.kodein.di.Kodein
 
+/**
+ * @author Vinicius Carvalho
+ */
 interface ModuleLoader {
     fun getModules() : List<Kodein.Module>
 }
